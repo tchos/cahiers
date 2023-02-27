@@ -219,6 +219,16 @@ mount -o loop /chemin/fichier.iso /media/cdrom
 // démarrer le système en mode graphique et multi-user:
 	- init 5
 
+// Mettre le système en différents modes:
+	- Arrêter le système: halt / poweroff (SysVinit) ou systemctl halt / systemctl poweroff (Systemd)
+	- Redémarrer le système: reboot (SysVinit) ou systemctl reboot (Systemd)
+	- Mettre le système en veille prolongée: pm-suspend (SysVinit) ou systemctl hibernate-i (Systemd)
+	- Afficher les logs de démarrage: dmesg | less (SysVinit) ou journalctl -b | less (Systemd)
+	- Afficher les logs du système: tail -f /var/log/messages (SysVinit) ou journalctl -f (Systemd)
+
+// Envoyer un message à tous les users connectés:
+	- $ wall ensuite taper le message et valider avec la touche ctrl. Tous les users connectés au serveur recevront alors le message.
+
 
 	
 
