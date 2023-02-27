@@ -1,0 +1,183 @@
+access_token: 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
+
+
+1. Installer symfony (Voir le site de symfony)
+
+2. Installer composer (Voir le site getcomposer.org puis faire mv composer.phar /usr/local/bin/composer)
+	- Version de composer: $ composer -V
+	- Version de php: php -v
+
+3. Installer Docker (Exécuter les cmdes ci-dessus dans l'ordre):
+    sudo apt update
+    sudo apt -y install curl gnupg2 apt-transport-https software-properties-common ca-certificates 
+    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+    echo "deb [arch=amd64] https://download.docker.com/linux/debian buster stable" | sudo tee  /etc/apt/sources.list.d/docker.list
+    sudo apt update
+    sudo apt install docker-ce docker-ce-cli containerd.io
+    sudo usermod -aG docker $USER
+    newgrp docker
+    docker run --rm -it  hello-world
+
+4. Installer Docker-compose:
+    curl -s https://api.github.com/repos/docker/compose/releases/latest \
+    | grep browser_download_url \
+    | grep docker-compose-Linux-x86_64 \
+    | cut -d '"' -f 4 \
+    | wget -qi -
+    sudo chmod +x docker-compose-Linux-x86_64
+    sudo mv docker-compose-Linux-x86_64 /usr/local/bin/docker-compose
+    sudo curl -L https://raw.githubusercontent.com/docker/compose/master/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose
+    source /etc/bash_completion.d/docker-compose
+    docker-compose version
+
+    - Démarrer docker: sudo service docker start
+    - Démarrer les services de Docker: docker-compose up -d
+    - Voir les conteneurs en exécution: docker-compose ps, docker ps -a
+    - Arrêter les conteneurs: docker-compose stop
+	- Arrêter un conteneur particulier: docker stop container-id
+	- Désisntaller une image docker: 1- Arrêter son conteneur id: docker stop container-id	2- Supprimer son conteneur: docker rm container-id	3- Supprimer l'image de docker: docker rmi image-id
+
+5. Installer les différentes technologies à utiliser:
+    - Extensions php: intl‘, pdo_pgsql (sudo dnf install php-pgsql-8.1.*) , xsl , amqp , gd , openssl , sodium, redis, curl, php-fpm, php-cgi, yarn, php_posix
+    - npm, , rabbitmq, visual studio (php docblockr, vscode great icons, phpcs, beautify, php snifer, twig, php intelliphense, php namespace resolver, twig language, 
+        bracket pair colorizer)
+        
+5.1. Installation de yarn:
+	- curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+	- echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+	- sudo apt update && sudo apt install yarn
+
+
+6. Les packages symfony de bases à installer:   symfony composer require :
+    - composer require symfony/orm-pack
+    - profiler --dev, debug --dev, logger, maker --dev, annotations, orm (Gestion de la bd), easycorp/easyadmin-bundle (EasyAdmin: Interface d'administration), twig (Installer Twig), intl
+    - symfonycasts/verify-email-bundle (pr send l'email de vérification à la créa du cpte user), symfonycasts/reset-password-bundle (pr réinitialiser un password perdu), fakerphp/faker (charger les fake data)
+    - twig/string-extra (permet de faire un résumé d'un article selon le nbre de mots renseignés)
+    - symfony/webpack-encore-bundle -> yarn install -> npm install --force -> renommer le fichier assets/styles/app.css en assets/styles/app.scss (avec refactor)
+		voir la video (Bootstrap 5 avec Symfony 5 et Webpack Encore de Yoandev ou aller ici: https://yoandev.co/bootstrap-5-avec-symfony-5-et-webpack-encore/)
+	- composer require ux symfony/ux-autocomplete
+
+7. GIT:
+	- cloner un projet:						git clone repository
+	- cloner une branche d'un projet				git clone --branch <branchname> repository
+	- S'identifier dans git : 					git config --global user.email "kwenol@yahoo.fr" et git config --global user.name "Tchos Le Milanais"
+	- Ajouter une modification: 					git add puis faire git commit -m "message"
+	- Faire un commit en ligne sur github				git push -u origin master
+	- Le workflow commence par la création d’une branche Git: 	git checkout -b sessions-in-redis
+	- Basculer entre les branches					git checkout branche (Ex: git checkout master)
+
+	7.1 - Crer un new repository en ligne:				Se connecter à github et creer le repository puis faire: 
+		- echo "# project_name" >> README.md
+		- git init
+		- git add README.md / git add .
+		- git commit -m "First commit"
+		- git branch -M main (ou master)
+		- git remote set-url origin https://github.com/tchos/project_name.git / git remote add origin https://github.com/tchos/project_name.git
+		- git pull https://github.com/tchos/project_name.git main
+		- git push -u origin main (ou master)
+
+8. Au début du prpjet:
+	- Configurer l'ide par défaut de symfony:		Ajouter "ide: vscode" dans le fichier /config/packages/framework.yaml
+
+9. Commandes symfony:
+    1. Installer une autorité de certication pour activer le support TLS:   	$ symfony server:ca:install
+    2. Vérifier que notre ordi réponds bien aux conditions requises:        	$ symfony book:check-requirements
+    3. Créer un nouveau projet symfony:					  						$ symfony new my_project_name --webapp
+    4. Installer les outilis nécessaires au bon fonctionnement d'un projet symfony (Points 6 et 12)
+    4. Cloner un projet symfony:												$ git clone https://github.com/tchos/guestbook.git ensuite faire $ symfony composer install dans le dossier du projet
+    5. Exécuter l'application symfony:											$ symfony server:start (sur un port particulier symfony serve --port=8005)
+    6. Ouvrir le site web dans un navigateur à partir de la ligne de commande:	$ symfony open:local
+    7. Consulter tous les log de symfony sur un projet:							$ symfony server:log
+    8. Afficher toutes les commandes disponibles sous un namespace donné:		$ symfony console list "namespace" Ex:	symfony console list make
+    9. Créez un Controller:														$ symfony console make:controller "nomDuController" (La cmd crée 1e classe "nomDuController" dans le répertoire "src/Controller/")1
+Créer la BD du pojet:															$ symfony console doctrine:database:create
+    10. Accéder à la bd postgres locale:										$ symfony run psql
+    11. Vérifiez toutes les variables d’environnement exposées:					$ symfony var:export
+    12. Créer des classes d’entités:											$ symfony console make:entity "nomEntite"
+    13. Migrer la BD:															$ symfony console make:migration
+    14. Mettre à jour le schéma de la base de données locale:					$ symfony console doctrine:migrations:migrate
+    15. Faire dépendre le projet de Twig:										$ symfony composer require twig
+    16. Voir toutes les commandes symfony possibles:							$ symfony console
+    17. Voir tout ce qui est injectable dans une fonction:						$ symfony console debug:autowiring
+    18. Voir toutes les routes de mon application:								$ symfony console debug:router
+    19. Voir tous les paquets symfony installés:								$ symfony composer show
+    20. Créer le dashboard de easyAdmin											$ symfony console make:admin:dashboard
+    21. Ajouter une entité dans le dashboard de easyAdmin						$ symfony console make:admin:crud
+    22. Créer formulaire lié à l'entité:										$ symfony console make:form
+    23. Créer le contrôleur qui va gérer chaque module et ses pages:			$ symfony console make:controller
+    
+10. Stocker les sessions dans Redis
+	1. Créez une branche Git 						$ git checkout -b sessions-in-redis
+	2. Mettez à jour la configuration de Symfony si nécessaire ;
+	3. Écrivez et/ou mettez à jour le code si nécessaire ;
+	4. Mettez à jour la configuration PHP (ajoutez l’extension Redis PHP) ;
+	5. Mettez à jour l’infrastructure sur Docker et SymfonyCloud (ajoutez le service Redis) ;
+	6. Testez localement ;
+	7. Testez à distance ;
+	8. Mergez la branche dans master ;
+	9. Déployez en production ;
+	10. Supprimez la branche.
+	
+	Tous les changements nécessaires pour les étapes 2 à 5 peuvent être effectués en un seul patch dans le fichier : config/packages/framework.yaml (Page 115 en route pour symfony 5 )
+	
+11. Configuration d'un hote virtuel pour un projet symfony
+	1. Se rendre dans le fichier .env et faire APP_ENV=prod / ensuite faire composer dump-env prod
+	2. Exécuter la commande APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
+	   Exécuter la commande composer install --no-dev --optimize-autoloader
+	3. Installer le package apache pour symfony: composer require symfony/apache-pack
+	4. Copier son projet symfony dans /var/www/html/
+	5. Se rendre dans le dossier /etc/apache2/sites-available
+	6. Créer le fichier conf du projet symfony en multipliant le fichier 000-default.conf et en le renommant en projetsymfony.conf
+	7. Ouvrir le fichier projetsymfony.conf et mettre ceci (Ici mon projet symfony se nomme 'symbnb'):
+
+		<VirtualHost *:80>
+		    	ServerName symbnb.cm
+		    	ServerAlias www.symbnb.cm
+
+			DocumentRoot /var/www/html/symbnb/public
+		    	DirectoryIndex index.php
+
+		    
+			<Directory "/var/www/html/symbnb/public">
+				AllowOverride All
+				Order Allow,Deny
+				Allow from All
+
+				FallBackResource /index.php
+			</Directory>
+
+			ErrorLog /var/log/apache2/project_error.log
+			CustomLog /var/log/apache2/project_access.log combined
+		</VirtualHost>
+	8. Activer le site: sudo a2ensite symbnb.conf (projetsymfony.conf)
+	9. Redémarrer apache: sudo systemctl reload apache2
+	10. Donnez les droits d'accès au dossier du projet
+
+
+12. Taches à effectuer après avoir créé un projet symfony:
+	1. Configurer la BD dans le fichier .environnement
+	2. Intégrer bootstrap au projet:
+		1. Aller dans le dossier public/assets/css/ pour mettre les fichiers css de bootstrap et font-awesome et dans public/assets/js pour les fichiers js de bootstrap
+		2. Se rendre dans le fichier "config/packages/twig.yaml" et ajouter la ligne "form_themes: ['bootstrap_5_layout.html.twig']" comme valeur de la variable "twig:"
+		3. Configurer bootstrap dans le fichier base.html.twig. De même intégrer les fichiers du template.
+	3. Installation, configuration: composer require easycorp/easyadmin-bundle
+	4. Mettre en place le module des user: (Pour plus de détails voir la page : https://symfony.com/doc/current/security.html )
+		1. symfony console make:user (Accepter de hasher le password) ou le faire plutard manuellement avec "symfony console security:hash-password"
+		2. symfony console make:entity User (Pour ajouter d'autres champs dans la table User)
+		3. Création de l'authentification: symfony console make:auth
+		3. Création du formulaire d'inscription: 
+			symfony console make:registration-form (Pour créer le formulaire d'enregistrement)
+		4. Création du formulaire de connexion: symfony console make:auth ( Nommer le fichier comme vous voulez (Ex: UserAuthenticator ) et gérer le code du fichier login.html.twig se trouvant dans templates/security )
+		4. Hasher le password: $symfony console security:hash-password
+		5. Pour permettre la création de compte, créer le , le RegisterType
+		6. Mapping de EasyAdmin avec l'entité User
+		
+13. Quelques astuces dans symfony:
+	1. Accéder à la collection d'un entity:
+		//Liste des agents détachés au sein de l'organisme .
+            	$agents = $organisme->getAgentDetaches()->toArray();
+
+14. Gestion des Fixtures avec symfony:
+	- Installer les fixtures avec les commandes suivantes: $ composer require orm-fixtures; $ composer require fakerphp/faker
+	- Créer ses fixture dans le fichier src/DataFixtures/AppFixtures.php ( voir des exemples dans les projets symreact et symbnb)
+	- La creation des fixtures terminee, faire: $ php bin/console doctrine:fixtures:load --no-interaction

@@ -1,0 +1,121 @@
+
+1. Importer les fichier AGENTX, Historique (HAR), VRAP(Rappels en mémoire), ENFANT au format csv
+avec les syntaxes SPSS.
+
+2. Exécuter dans l'ordre les commandes ci-après:
+
+****domino****
+
+ssh domino@10.100.10.208 -p5872 
+ 
+ThV8dE_Z0O\3h
+
+cd /MIGRATION_ESDSOFT/Import_ddppfiles
+mkdir 072022
+cd 072022/
+sudo rm -r *.csv
+
+** Se rendre dans le dossier de notre machine où se trouvent les fichers *.csv qui vont être transférés en scp sur domino.
+cd /run/media/tchos/Data/spss/esdsoft/maj_mens_esd_soft/072022
+
+** Transfert des fichiers RAPmemoire Historique et Enfant.
+scp -P 5872 *.csv domino@10.100.10.208:/MIGRATION_ESDSOFT/Import_ddppfiles/072022
+
+ThV8dE_Z0O\3h
+
+** Fichiers A20 et E20
+scp -P 5872 *20 domino@10.100.10.208:/MIGRATION_ESDSOFT/Import_ddppfiles/
+ThV8dE_Z0O\3h
+
+*** Aller sur domino et faire:
+cd /MIGRATION_ESDSOFT/Import_ddppfiles
+cp A20 /outils/A20/A20CONV.M072022
+cp E20 /outils/E20/E20CONV.M072022
+
+
+** Backup des BD sur domino:
+cd /MIGRATION_ESDSOFT/Import_ddppfiles/072022
+for | dbesdsoft
+----------------
+mysqldump -u root -p --databases dbesdsoft  > dbesdsoft072022bkp.sql
+pass: esdbd@pwd
+---------------------------------------------------------------------
+
+for | dbhist_erm 
+----------------
+mysqldump -u root -p --databases  dbhist_erm > dbhist_erm072022bkp.sql
+pass: esdbd@pwd     
+----------------------------------------------------------------------
+
+** Truncate and load databases
+mysql -u root -p dbhist_erm
+pass: esdbd@pwd
+
+** table rappel_memoire
+select count(*) from rappel_memoire ;
+truncate rappel_memoire;
+
+LOAD DATA LOCAL INFILE 'RAPMEMOIRE.csv' INTO TABLE rappel_memoire FIELDS TERMINATED BY ';' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
+
+** Pour vérification du matricule qui dérange souvent
+select * from rappel_memoire where id_rappel_memoire = "1";
+update rappel_memoire set matricule="010205K" where id_rappel_memoire = "1";
+
+** table historique_erm
+select count(*) from historique_erm; 
+truncate historique_erm;
+
+LOAD DATA LOCAL INFILE 'HISTORIQUE.csv' INTO TABLE historique_erm FIELDS TERMINATED BY ';' ENCLOSED BY '"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES;
+
+** table enfant (Si ca ne marche utiliser le server 10.20.209.245 pour load data et recupérer pour aller load dans mysql domino).
+select count(*) from enfant;
+truncate enfant;
+
+LOAD DATA LOCAL INFILE 'ENFANT.csv' INTO TABLE enfant FIELDS TERMINATED BY ';' ENCLOSED BY '"' LINES TERMINATED BY '\r\n' (matricule_pere,ordre,rang,nom,prenom,sexe,date_naissance,residence_naissance,id_enfant);
+
+NB: Si échec de l'un des LOAD DATA, faire ces taches sur le serveur esd@10.20.209.245 pass: esdsoft@server.2019
+	mysql -u root -p dbhist_erm
+	pass: esdbd@pwd
+	*** Faire la mêmes requêtes SQL.
+	Quand c'est fini, exporter la table qui dérange en sql pour aller la charger dans la bd dbhist_erm du server domino.
+	Ex: scp -P 5872 enfant072022bkp.sql domino@10.100.10.208:/MIGRATION_ESDSOFT/Import_ddppfiles/072022
+	Ensuite se connecter à la bd dbhist_erm du server domino:
+		mysql -u root -p dbhist_erm
+		pass: esdbd@pwd
+		source enfant072022bkp.sql
+	
+
+
+** POSTGRES SQL VIA PGADMIN user: postgres pass: esdbd@pwd ou via le web 10.20.209.245/pgadmin4 avec user: postgres@localhost et pass: esdbd@pwd
+
+- Faire le backup de la bd "alfresco" avec les paramètres "Filename = alfrescoBKP072022", "Format = Tar" et "Encoding = UTF8" ou faire en cmd
+	pg_dump --file "/var/lib/pgadmin/storage/postgres_localhost/alfrescoBKP072022" --host "10.100.10.208" --port "5432" 
+	--username "postgres" --no-password --verbose --format=t --blobs --encoding "UTF8" "alfresco.db".
+	
+- Faire le backup de la bd "business_data" avec les paramètres "Filename = business_dataBKP072022", "Format = Tar" et "Encoding = UTF8" ou faire en cmd
+	pg_dump --file "/var/lib/pgadmin/storage/postgres_localhost/business_dataBKP072022" --host "10.100.10.208" --port "5432" 
+	--username "postgres" --no-password --verbose --format=t --blobs --encoding "UTF8" "business_data.db".
+
+*** Appliquer ceci au cas où l'un des LOAD DATA LOCAL INFILE de ENFANT ou AGENT ne marche pas .
+- scp AGENTX072022.csv esd@10.20.209.245:/home/esd/Bureau pass: esdsoft@server.2019
+- Se connecter au serveur esd@10.20.209.245:/home/esd/Bureau pass: esdsoft@server.2019 et faire:
+	- sudo cp AGENTX072022.csv /var/lib/pgadmin/storage/postgres_localhost/
+- Ouvrir POSTGRES dans le navigateur en faisant http://10.20.209.245/pgadmin4 avec user: postgres@localhost et pass: esdbd@pwd
+- Aller sur la bd CENADI_ESD-SOFT_PROD
+	- truncate AGENT
+	- Outil d'Import/Export pour la table AGENT
+
+
+*** ALLER Lancer les service Bonita avec le user: install pass: EsdWord@2019
+*** Aller en ssh sur domino pour rédémarrer les services postgres et bonita en étant dans le dossier /MIGRATION_ESDSOFT/Bonita:
+Pour rappel: ssh domino@10.100.10.208 -p5872 pass: ThV8dE_Z0O\3h
+	- sudo systemctl restart postgresql.service
+	- ./stop-bonita.sh 
+	- ./start-bonita.sh
+	
+*** Si pb de logo, veuillez remettre
+
+- se rendre dans /MIGRATION_ESDSOFT/
+- sudo cp -rv logo.png Bonita/server/temp/bonita_portal_405794@server.alfresco.lan/tenants/1/theme/portal/skin/images
+- sudo cp -rv login-logo.png Bonita/server/temp/bonita_portal_405794@server.alfresco.lan/tenants/1/theme/portal/skin/images
+	

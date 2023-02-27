@@ -1,0 +1,105 @@
+- Pour revenir : f3
+- touche ctrl: entrer
+- touche entrer: manipuler le curseur
+- ***: ici il faut seulement traper ctrl sinon il va ignorer
+- https://myinterskill.co.uk/ = plateforme de test
+- F13 = shift + F1 donc F24 = shift + F12
+
+commandes TSO (Time Sharing Option):
+- LOGOFF: se déconnecter de TSO.
+- LOGON: se conncter, LOGON implique le LOGOFF donc en faisant LOGON ca fait d'abord LOGOFF avant de vous connecter à nouveau.
+NB: The LISTCAT/LISTC command is used to list data sets, interrogate catalogs, and enable the user to list one or many data sets with a particular name or prefix.
+- LISTCAT ENTRIES('TRAIN20.ALLOC.BY.JCL') ALL: Lister tous les catalogues d'un dataset.
+- LISTCAT LEVEL/LVL(TS89809): Lister tous les DS dont le HQL est TS89809, TS89809 étant le user ID.
+NB: LISTDS command can be used to list data set information
+- LISTDS ('TS89809.PROGS.COBOL') STATUS: Lister les DDnames associés au DS.
+- RENAME 'OLD NAME' 'NEW NAME': Renommer un DS ou un mbre d'1 PDS.
+- TSO PROFILE NO PREFIX: va désactiver le préfix (ex: TRAIN52) sur le nom de chaque DATASET Name
+- TSO PROFILE PREFIXE(CMR): Cration du préfixe CMR pour l'ajouter au nom de chaque new dataset.
+- # PROFILE: Affiche certains infos sur mon profile connecté actuellement
+- =6; # PROFILE: Avoir accès à mon profile peu importe où je me trouve.
+- ALLOC FILE/DDNAME(ddname) DA('DATASET NAME') SHR : Alloction d'1 DS avec le DDNAME que nous-mêmes avons choisi.
+- LISTALC:
+- FREE (ALL|DSNAME(dataset-names)|DDNAME(ddnames)): Desallouer un DS précédemment alloué.
+	NB: LOGOFF command that the system will automatically free data sets previously allocated to your session.
+- ALLOC DSNAME('DATA SET NAME') DDNAME('ddnam'): Allouer un DS et l'Associer un DDNAME (Data Definition name) vu comme un lien symboliue.
+- ALLOCATE DATASET('DATA SET NAME') FILE('ddname'): Allouer un DS et l'Associer un DDNAME (Data Definition name) vu comme un lien symboliue.
+
+commandes ISPF (Interactive Search and Display Facility):
+- PFSHOW: permet de voir tous les roles des touches F du clavier (F1...F12) encore app
+- KEYS: montre les configs actuelles de PFSHOW
+- ISPFORM: ramène vers le menu principal de ISPF 
+- DDLIST: Liste tous les DDNAME (Data Definition Name. DD c'est le mécanisme de création de lien entre un process et Data set sur le disque)
+- E devant 1 PDS: Entrer dans le PDS
+	- I: insérer une ligne (i9 insere 9 lignes)
+	- D: supprimer une ligne (d11 supprime 11 lignes)
+	- DD: Supprimer un bloc
+	- R: dupliquer une ligne
+ 	- RR: dupliquer un bloc
+	- C: copier une ligne
+	- CC: copier un bloc
+	- A: After une ligne  (Ex: coller une ligne après la ligne où se trouve le curseur)
+	- B: Before une ligne (Ex: coller une ligne avant la ligne où se trouve le curseur)
+	- SAVE: Enregistre les modifications
+	- CAN: Sortir sans enrgistrer les modifications.
+	- numéro de ligne + F8: aller à la ligne
+	- m F8: Vas jusqu'à la dernière ligne du code
+	- m F7: Vas à la toute 1ère ligne du code
+	- F DUMP (trouve la chaine DUMP)
+	- F DUMP ALL (trouve toutes les occurrences de la chaine DUMP)
+	- C DUMP LOLO: (change une occurrence de DUMP en LOLO)
+	- C DUMP LOLO ALL: (change toutes les occurrences de DUMP en LOLO)
+	- C DUMP LOLO + F5 (parcoure chaque et occurence de DUMP et en appuyant sur F6 pour changer
+
+- S mbre: Ajouter un mbre dans un PDS (Pour écrire des JCL).
+- S MBRE2;COPY MBRE1: Création du mbre MBRE2 en dupliquant le mbre MBRE1 ou faire S MBRE2, entrer dans le JCL et faire COPY MBRE1.
+- F mbre: Trouve un mbre.
+- L mbre*: liste tous les objets commencant par mbre.
+- START: Crée un nouvel écran ISPF (Screen 2,..,32 --- On peut aller jusqu'à 32 écrans) 
+- SWAP: basculer entre les écrans créés ou F9.
+- SWAP LIST: Montre un panneau où l'on peut tous les écrans.
+- SWAPBAR: AFFICHE LA BAR D'état.
+- CUT: COUPER
+- COPY: Copier.
+- PASTE: Coller.
+- REF: RAFRAICHIR l'écran.
+- AL DS2 DEVANT DS1: Allocation identique de DS2 comme DS1.
+- CO devant DS1: Copier un ou plusieurs membres de DS1 dans un autre DS. Pour le faire il faut exécuter la cmde: * S *: Copier tous les membres ou faire S devant les membres à copier.
+- X ALL: Masquer l'affichage de tous les DS.
+- F string: Afficher tous les DS qui ont le 'string'.
+
+
+commandes SDSF (System Display Search Facility):
+- SET DISPLAY ON: Affiche la ligne qui begin avec 'PREFIX=..*' car elle n'est pas activée par défaut donc il faut tjr l'activer car ca me donne mon état SDSF.
+- PREFIX ** : M'affiche tous les espaces adresses. PREFIX (PRE) par défaut m'affiche tous les espaces adresses commencant par mon nom de USER.
+- PREFIX TRAIN52*: Affiche la liste des JOB commencant par TRAIN52.
+- H ou O: Liste les JOB dont l'exécution est terminée (S puis CTRL permet de sélectionner un job pour avoir + de détails sur l'exécution du job).
+- DA: Liste les job en cours d'exécution.
+- OWNER * : Permet de voir tous les USERs propriétaires d'un espace adresse.*
+- DA (Display Active): Voir tous les process (espaces adresses) qui tournent actuellement sur le système (équivalant du gestionnaire de taches sur windows).
+- /C U=userID: permet de tuer la session du user 'USERID' si l'on a les droits.*
+- S JOB: Voir les détails d l'exécution d'un job
+- ? JOB: Voir les détails de l'output d'exécution d'un job avec des sous-parties.
+- SORT CRITERE A: Tri ascendant selon le critère (Ex: SORT JobID).
+- SORT CRITERE D: Tri ascendant selon le critère (Ex: SORT CRDATE D: Tri par date de création)
+- SORT ?: Tri selon plusieurs critères
+- ARR(ANGE) ?: Réarrange les colonnes. On sélectionne avec "/" et on cherche où le mettre avec "A" ou "B".
+- XDC JOB: Permet de sauvegarder l'ouput du dump d'un JOB dans DS séquentiel.
+- /D GRS,C : Global Resource Serialisation ca permet d'interroger le mécanisme JES2 pour voir s'il y a un contentieux sur 1 DS.
+- INIT: Initators, espace adresse prêts à accepter les JOB (1 initiator A n'acceptera que les JOB de classe A, 1 initiator ABC accèptera les JOB de 
+			classe A, de classe B, de classe C. Si on déclare un JOB avec une classe qui ne se trouve pas dans les initiator, ce JOB ne s'exécutera jamais
+			jusqu'à ce qu'on change le classe par une classe dont l'initiator existe)
+
+COMMANDES SYSTEME:
+- Quand une cmd est précédée de / ca veut dire que c'est une commande système.
+- /D : DISPLAY
+- /F CATALOG,OPEN
+- /D NET, MAJNODES: Voir les noeuds (sites) ouverts dans le système.
+
+NB: 
+	- Un JOB est 1 espace adresse mais un espace adresse n'est pas forcement un JOB car il y a plusieurs types d'espace adresse.
+
+
+
+
+

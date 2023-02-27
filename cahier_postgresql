@@ -1,0 +1,43 @@
+12. PostgreSQL
+	Installing PostgreSQL on Fedora:
+		- sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/F-35-x86_64/pgdg-fedora-repo-latest.noarch.rpm
+		- sudo dnf install -y postgresql14-server
+		- sudo dnf install postgresql-server
+		- sudo postgresql-setup --initdb 
+	
+	Installing pgAdmin4 on Fedora:
+		- sudo dnf update
+		- sudo dnf module enable postgresql:14
+		- sudo dnf install -y postgresql-server postgresql-contrib
+		- sudo postgresql-setup initdb
+		- sudo systemctl start postgresql
+		- sudo systemctl enable postgresql
+		- sudo firewall-cmd --add-service=postgresql --permanent
+		- sudo firewall-cmd --reload
+		- sudo -i -u postgres (se connecter au SE avec le user postgres)
+		
+	Le fichier pg_hba.conf se trouve ici: /var/lib/pgsql/data/pg_hba.conf mais on ne peut y accéder qu'en se connectant avec le user postgres
+	- Détruire le pass de postgres: sudo  passwd -d postgres
+	- Définir un new password: sudo -u postgres passwd (il faut le faire pour ajouter le user postgres au fichier des sudoers)
+	- Mettre la valeur "md5" sur la dernière colonne (colonne METHOD) pour local, 127.0.0.1/32 et ::128.
+	
+	Installing pgAdmin 14 on Fedora:
+	
+	1. Démarrer les services:	sudo service postgresql start ou sudo /etc/init.d/postgresql start ou sudo systemctl start postgresql
+	2. Connexion en mode commande:	psql -U postgres -h localhost -W (on peut ajouter -d nombd )
+	3. Donner un new password au user postgres:	ALTER USER postgres PASSWORD 'newPassword';
+	4. Déconnexion en mode commande: \q
+	5. Importer un fichier sql:	\i basics.sql
+	6. Lister toutes les bases données PostgreSQL :		\l ou select datname from pg_database 
+	7. Lister toutes les tables:	\d
+	8. Se connecter à une base:	USE nombd ou \c nombd
+	9. Voir la version de postgreSQL:	SELECT version();
+	10. Voir la date courante:	SELECT current_date;
+	11. Sauvegarder une base:	pg_dump NOM_BASE > NOM_FICHIER.sql ou encore avec plus de détails:
+		pg_dump --file "/var/lib/pgadmin/storage/postgres_localhost/alfrescoBKP062022" --host "10.100.10.208" --port "5432" 
+	--username "postgres" --no-password --verbose --format=t --blobs --encoding "UTF8" "alfresco.db".
+	12. Restaurer une base:		psql newbase < NOM_FICHIER.sql
+	13. Sauvegarder toutes les bases:	pg_dumpall > NOM_FICHIER
+	14. Changer l'utilisateur d'une base base de donnee:	\c basededonnee puis faire REASSIGN OWNED by user1 to user2;
+	15. Liste des tables:	\dt
+	16. Description d'une table:	\d table

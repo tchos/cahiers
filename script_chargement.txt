@@ -1,0 +1,227 @@
+
+Before these operations make sure you back up all the databases.
+
+for | dbesdsoft
+----------------
+mysqldump -u root -p --databases dbesdsoft  > dbesdsoft032022bkp.sql
+-------------------------------------------------------------------
+
+for | dbhist_erm 
+----------------
+mysqldump -u root -p --databases  dbhist_erm > dbhist_erm032022bkp.sql     
+-------------------------------------------------------------------
+
+for all databases
+---------------------------------------------
+mysqldump -u root -p --databases dbesdsoft dbhist_erm > backup032022.sql
+
+---------------------------------------------
+ 
+-----drop the table-------
+
+use dbhist_erm ;
+
+select count(*) from rappel_memoire ;
+truncate rappel_memoire;
+
+------reconstruct de id---------
+
+alter table rappel_memoire modify id_historique bigint(11) auto_increment;
+
+-------load data--------
+
+LOAD DATA LOCAL INFILE 'RAPMEMOIRE.csv' INTO TABLE rappel_memoire FIELDS TERMINATED BY ';' ENCLOSED BY '"' LINES TERMINATED BY '\r\n'   ;
+
+-----update line one------
+
+select * from rappel_memoire where id_rappel_memoire = "1";
+update rappel_memoire set matricule="010205K" where id_rappel_memoire = "1";
+ 
+-----drop the table-------
+
+truncate historique_erm;
+select count(*) from historique_erm; 
+
+------reconstruct de id---------
+
+alter table enfant modify id_historique bigint(11) auto_increment;
+
+-------load data--------
+
+LOAD DATA LOCAL INFILE 'HISTORIQUE.csv' INTO TABLE historique_erm FIELDS TERMINATED BY ';' ENCLOSED BY '"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES;
+ 
+-----drop the table-------
+
+select count(*) from enfant;
+truncate enfant;
+
+-------load data efants--------
+
+LOAD DATA LOCAL INFILE 'ENFANT.csv' INTO TABLE enfant FIELDS TERMINATED BY ';' ENCLOSED BY '"' LINES TERMINATED BY '\r\n' (matricule_pere,ordre,rang,nom,prenom,sexe,date_naissance,residence_naissance,id_enfant)  ;
+ 
+***********************fin de chargement dans mysql**************************************** 
+ 
+---- adding new payments ---------
+
+mysql> select count(matricule) from historique_erm;
++------------------+
+| count(matricule) |
++------------------+
+|          2763777 |
++------------------+
+
+mysql> select * from historique_erm where id_historique = "1" ;
++-----------+-------------------+-----------------+--------------+-------+--------+---------+-----------+--------+----------+---------------+
+| matricule | code_remuneration | date_traitement | date_cloture | signe | calcul | montant | ministere | nature | num_acte | id_historique |
++-----------+-------------------+-----------------+--------------+-------+--------+---------+-----------+--------+----------+---------------+
+| 010013A   | 425               | 1992-01-01      | 1992-01-30   | +     | 03     | 2277914 | 20        | DN     | 391992   |             1 |
++-----------+-------------------+-----------------+--------------+-------+--------+---------+-----------+--------+----------+---------------+
+1 row in set (0.00 sec)
+mysql> select * from historique_erm where id_historique = "2763777";
++-----------+-------------------+-----------------+--------------+-------+--------+---------+-----------+--------+----------+---------------+
+| matricule | code_remuneration | date_traitement | date_cloture | signe | calcul | montant | ministere | nature | num_acte | id_historique |
++-----------+-------------------+-----------------+--------------+-------+--------+---------+-----------+--------+----------+---------------+
+| Z103955   | 420               | 2019-09-01      | 2019-09-30   | +     | 03     | 20466 1 |           |        |   2019   |       2763777 |
++-----------+-------------------+-----------------+--------------+-------+--------+---------+-----------+--------+----------+---------------+
+1 row in set (0.00 sec)
+
+select * from historique_erm where id_historique = "1" ; 
+--------
+
+mysqldump -u root -p dbhist_erm  historique_erm > tbl_erm102021bkp.sql
+-----------
+
+--- LOCATING AGENTX
+
+locate AGENTX.csv
+
+/var/lib/pgadmin/storage/postgres_localhost
+--------------------------------------------
+"/usr/bin/psql" --command " "\\copy public.\"AGENT\" (\"TITRE\", \"NOMS\", \"PRENOMS\", \"SEXE\", \"NOMBRE_ENFANTS\", \"DATE_EMBAUCHE\", \"GRADE\", \"MINISTERE\", \"EMPLOI\", \"DIRECTION\", \"LOGEMENT\", \"MATRICULE\", \"RESIDENCE\") FROM '<STORAGE_DIR>/AGENTX042022.csv' DELIMITER ';' CSV HEADER ENCODING 'UTF8' QUOTE '\"' ESCAPE '''';""
+
+
+
+
+
+
+
+
+login to PGadmin4 
+
+user:postgres@localhost 
+
+-----------------------------------------Z 14 -----------------------------------------
+psql -U postgres -W 
+
+pg_restore -W -c -U postgres -d business_data.db -v alfrescodb_16102021 
+pg_restore -W -c -U postgres -d alfresco -v alfrescodb_19112021 
+psql -U username -d database_name -f objects.sql
+
+
+
+LOAD DATA LOCAL INFILE 'HISTORIQUE.csv' INTO TABLE historique_erm FIELDS TERMINATED BY ';' ENCLOSED BY '"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES;
+
+login esd-server cenadi
+-----------
+ssh esdadmin@195.24.198.44 -p 7442
+
+ssh esdadmin@10.100.10.209 -p 7442
+74MLx8e
+
+pg_restore -U postgres -d business_datadb -1  business_2data13052021
+
+netstat -ntpl
+
+
+****domino****
+ssh domino@195.24.198.48 -p5872 
+
+ssh domino@10.100.10.208 -p5872 
+ 
+ThV8dE_Z0O\3h
+
+
+**** 
+CREATE DATABASE alfresco OWNER alfresco ENCODING 'utf8';
+ GRANT ALL PRIVILEGES ON DATABASE alfresco TO alfresco;
+ALTER DATABASE alfresco  OWNER TO alfresco ;
+create role alfresco createdb login password 'alfresco';
+alter role alfresco LOGIN password 'alfresco';
+
+*****
+ drop database business_data.db;
+create database "business_data.db"  ;
+ALTER DATABASE "business_data.db"  OWNER TO postgres;
+alter user esdsoft password "esdbd";
+business_datadb.sql 
+**** 
+CREATE DATABASE "bonita_journal.db";
+ALTER DATABASE "bonita_journal.db" OWNER TO esdsoft ;
+grant all privileges on database alfresco to "bonita_journal.db" ;
+create role alfresco createdb login password "bonita_journal.db" 
+
+
+
+-------------------------------------end Z 14-------------------------------------------
+
+
+ sudo cp -rv logo.png /opt/Bonita/server/temp/bonita_portal_10927@esd-OptiPlex-3020/tenants/1/theme/portal/skin/images
+ sudo cp -rv login-logo.png /opt/Bonita/server/temp/bonita_portal_10927@esd-OptiPlex-3020/tenants/1/theme/portal/skin/images
+
+systemctl restart mysql.service
+systemctl restart postgresql 
+systemctl restart moteur_calcul.service
+systemctl restart moteur_historique.service
+
+
+http://195.24.198.48:8182/
+http://195.24.198.48:8080/bonita
+http://195.24.198.44:8081/share/page/
+
+
+
+********TRUNCATE IN POSTGRES ***********
+
+
+TRUNCATE TABLE esd CASCADE;                                                                                                          
+NOTICE:  truncate cascades to table "codification"  
+NOTICE:  truncate cascades to table "elementremuneration"  
+NOTICE:  truncate cascades to table "esd_commentaireesd" 
+NOTICE:  truncate cascades to table "codification_listeperiode" 
+TRUNCATE TABLE
+                   
+
+
+
+
+*******postgres******
+SELECT tenantid, id, name, processdefinitionid, description, startdate, startedby, startedbysubstitute, enddate, archivedate, stateid, lastupdate, rootprocessinstanceid, callerid, sourceobjectid, stringindex1, stringindex2, stringindex3, stringindex4, stringindex5
+	FROM public.arch_process_instance where rootprocessinstanceid = '58001' ;
+
+
+SELECT tenantid, id, name, processdefinitionid, description, startdate, startedby, startedbysubstitute, enddate, stateid, statecategory, lastupdate, containerid, rootprocessinstanceid, callerid, callertype, interruptingeventid, stringindex1, stringindex2, stringindex3, stringindex4, stringindex5
+	FROM public.process_instance where startedby = '42';
+
+
+
+
+
+*********************see an alfresco user in the database *****************
+
+
+Select 
+ca.id,
+ca.parent_node_id,
+ca.child_node_id,
+ca.qname_localname,
+np.string_value
+from alf_child_assoc as ca
+join alf_node as child on child.id = ca.child_node_id
+join alf_node as parent on parent.id = ca.parent_node_id
+join alf_qname as q1 on q1.id = parent.type_qname_id
+join alf_qname as q2 on q2.id = child.type_qname_id
+join alf_node_properties as np on np.node_id = parent.id
+where q1.local_name = 'authorityContainer'
+and q2.local_name = 'person'
+and np.qname_id = (select id from alf_qname where local_name = 
+ 'authorityDisplayName');

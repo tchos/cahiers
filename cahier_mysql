@@ -1,0 +1,16 @@
+
+
+- Résoudre le problème de SQLSTATE[42000]: Syntax error or access violation: 1055 Expression #3 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'apdecede.e2_.libelle' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
+- Résoudre le pb: ERROR 3948 (42000): Loading local data is disabled; this must be enabled on both the client and server sides
+SET GLOBAL local_infile = true;
+
+- Résoudre le pb: ERROR 2068 (HY000): LOAD DATA LOCAL INFILE file request rejected due to restrictions on access.
+
+***** PB réinitialisation du password
+update mysql.user set password=password('nouveaumotdepasse') where user='root';
+update mysql.user set authentication_string=password('nouveaumotdepasse') where user='root';
+FLUSH PRIVILEGES;
+exit;

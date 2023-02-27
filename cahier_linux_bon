@@ -1,0 +1,227 @@
+CAHIER KWETTE TRAVAUX LINUX
+
+// installer le repository de kali
+	Aller dans le fichier /etc/apt/source.list et mettre les lignes suivantes:
+	deb http://http.kali.org/kali kali-rolling main non-free contrib
+	deb-src http://http.kali.org/kali kali-rolling main non-free contrib
+
+// Commandes à maïtriser: lsof, grep, ftp, . ./.fichiercaché, which, 
+
+// Installer environnemnt graphique:
+	sudo apt install task-gnome-desktop
+	sudo apt install task-kde-desktop
+	sudo apt install task-mate-desktop
+
+// Voir quel processus écoute sur un port:
+	sudo lsof -i tcp:port
+
+
+// Vérifier qu'un port est en écoute
+	netstat -an | grep port
+
+// Monter une partition windows sur linux:
+	sudo mount -t ntfs -o rw /dev/sda2 /media/mmc/TCHOS/
+
+// Installer un paquet sur lunux ubuntu
+	sudo apt-get install nom_du_paquet
+
+// Installer un fichier .deb
+	sudo dpkg -i fichier.deb
+
+// Installer un fichier rpm
+	sudo rpm -ivh fichier.rpm
+
+// Installer un paquet sur redhat
+	sudo yum install nom_du_paquet
+
+// Installer la logithèque d'ubuntu
+	sudo apt-get install software-center 
+
+// Desarchiver un fichier .tar
+	tar -xvf fichier.tar -C = repertoire où l'archive sera desarchivee
+
+// Pour demarrer xampp si linux si on a le pb: XAMPP:  Another web server is already running, faire:
+	sudo apache2ctl -D 127.0.0.1 -k stop
+	sudo xampp start
+
+// Correction de l'installation de vlc sur Kali
+	sudo sed -i 's/geteuid/getppid/' /usr/bin/vlc
+
+// Reconfigurer un paquet
+	dpkg-reconfigure paquet
+
+// Rechercher un paquet
+	apt-cache search paquet
+
+// Informations sur un paquet
+	apt-cache show paquet
+
+// Se connecter en ftp sur une machine distante
+	ftp adresseIPMachine (Ensuite vous allez entrer le user et le mot de passe)
+	// transférer un fichier en ftp sur une machine distante
+		put fihier
+		mput * (tous les fichier d'un répertoire)
+	// Effacer un fichier sur la machine distante en ftp => del fichier
+	// Récupérer un fichier sur la machine distante en ftp
+		get fichierSurMachineDistante nomDufichierSurMaMachine
+	// Exécuter une commande sur machine en ftp
+		!commande
+		Exemple: !ls
+
+// Se connecter en ftp sur une machine distante sur un port autre que 21
+	1. tapez "ftp"
+	2. tapez "open ipMachineDistante port"
+	3. Entrer le nom du user puis tapez le mot de passe.
+
+// Se connecter en ssh sur une machine distante
+	ssh userMachineDistante@ipMachineDistante (Ensuite vous entrerez le mot de passe de userMachineDistante) si port=22
+	ssh userMachineDistante@ipMachineDistante -p autreport(Ensuite vous entrerez le mot de passe de userMachineDistante) si port <> 22
+
+// Echanger des fichiers avec une machine distante en utilisant le protocole scp
+	scp fichier userMachineDistante@ipMachineDistante:DossierDestination (Ensuite vous entrerez le mot de passe de userMachineDistante)
+	Exemple scp test.pdf lolo@192.168.1.2:Document/test2.pdf (Ici "test.pdf" portera le nom de "test2.pdf" sur la machine distante
+									Si rien n'est spécifié, il portera le nom "test.pdf")
+
+	scp -r dossier userMachineDistante@ipMachineDistante:. (. est les répertoire par défaut de userMachineDistante sur la machine
+								 distante)
+
+// Installation d'un serveur lampp
+	// Apache: apt install apache2
+	//Démarrer apache: /etc/init.d/apache2 start ou systemctl start apache2.service ou service apache2 start
+	//Arrêter apache: /etc/init.d/apache2 stop ou systemctl stop apache2.service ou service apache2 stop
+
+	//php: apt install php7.3
+
+	//Mysql: apt install mariadb-server
+	//Démarrer Mysql: /etc/init.d/mysql start ou service mysql start
+	//securiser mysql: sudo mysql_secure_installation
+	//Arrêter Mysql: /etc/init.d/mysql stop ou service mysql stop
+
+	//php-mysql: apt install php7.3-mysql
+
+	//server ftp: apt install proftpd
+
+	//serveur ssh: apt install openssh-server
+
+// Créer une nouvelle bd mysql =>  create database nom_bd default character set utf8 collate utf8_general_ci
+// Sauvegarder une base de donnees mysql => mysqldump -u root -p bd > bd.sql
+// Restaurer une bd mysql => mysql -u root -p bd < bd.sql
+
+
+//configurer un hôte virtuel sur apache
+	editer le fichier /etc/apache2/apache2.conf pour l'hôte
+	editer le fichier /etc/hosts pour l'adresse IP
+	
+// sous debian il faut installer les paquets suivants:
+	sudo, net-tools
+
+// pour que la commande service fonctionne faire
+	PATH=$PATH:/usr/sbin/
+
+// compte debian: login:kwette pass:e....l
+
+// ajouter un user au groupe sudo => adduser user sudo ou usermod -aG sudo(ou wheelsur centos/redhat/fedora) user ou faire: sudo vi /etc/sudoers et ajouter la ligne username ALL=(ALL:ALL) ALL
+
+// CONFIGURATION DE FTP
+	1. Installer proftpd
+	2. Créer un user pour le ftp (facultatif mais bien pour la sécurité)
+	3. Modifier le fichier proftpd.conf (/etc/proftpd/proftpd.conf) pour ne permettre aux users de ne voir que leur dossier 
+		et non toute la racine et modifier le port par défaut si l'on veut
+	4. On peut également interdire aux users ftp de se connecter en ssh en éditant le fichier sshd_config (/etc/ssh/sshd_config)
+		et en ajoutant la commande "AllowUsers user1 user2" (user1 et user2 étant les seuls autorisés à se connecter en ssh)
+
+// Corriger l'erreur: ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+	Exécuter les commandes suivantes les unes après les autres:
+	1. sudo mysql -u root
+	2. mysql> USE mysql;
+	3. mysql> UPDATE user SET plugin='mysql_native_password' WHERE User='root';
+	4. mysql> FLUSH PRIVILEGES;
+	5. mysql> exit;
+	6. service mysql restart
+
+// Corriger l'erreur de démarrage des mac virtuelles sur VirtualBox "Kernel driver not installed (rc=-1908)"
+	sudo apt install --reinstall linux-headers-$(uname -r) virtualbox-dkms dkms
+
+// Installer Symfony
+	1. sudo wget https://get.symfony.com/cli/installer -O - | bash
+	2. sudo mv ~/.symfony/bin/symfony /usr/local/bin/symfony
+
+// Installer Composer
+	1. curl -sS https://getcomposer.org/installer | php
+	2. sudo mv composer.phar /usr/local/bin/composer
+
+// Configuration d'un hote virtuel pour un projet symfony
+	1. Installer le package apache pour symfony: composer require symfony/apache-pack
+	2. Copier son projet symfony dans /var/www/html/
+	3. Se rendre dans le dossier /etc/apache2/sites-available
+	4. Créer le fichier conf du projet symfony en multipliant le fichier 000-default.conf et en le renommant en projetsymfony.conf
+	5. Ouvrir le fichier projetsymfony.conf et mettre ceci (Ici mon projet symfony se nomme 'symbnb'):
+
+		<VirtualHost *:80>
+		    	ServerName symbnb.cm
+		    	ServerAlias www.symbnb.cm
+
+			DocumentRoot /var/www/html/symbnb/public
+		    	DirectoryIndex index.php
+
+		    
+			<Directory "/var/www/html/symbnb/public">
+				AllowOverride All
+				Order Allow,Deny
+				Allow from All
+
+				FallBackResource /index.php
+			</Directory>
+
+			ErrorLog /var/log/apache2/project_error.log
+			CustomLog /var/log/apache2/project_access.log combined
+		</VirtualHost>
+	6. Activer le site: sudo a2ensite symbnb.conf (projetsymfony.conf)
+	7. Redémarrer apache: sudo systemctl reload apache2
+	8. Donnez les droits d'accès au dossier du projet
+
+// Résoudre le pb mysql: How to solve MySQL Syntax error or access violation: 1055 Expression of SELECT list is not in GROUP BY clause and contains nonaggregated column which is not functionally dependent on columns in GROUP BY clause
+	1. Aller dans le fichier /etc/mysql/my.cnf et ajouter le code suivant (au cas où la variable sql_mode existe faire plutot sql_mode =""):
+		[mysqld]
+		sql_mode = ""
+
+// Mettre à niveau Fedora
+	- sudo dnf update
+	- sudo dnf --refresh upgrade
+	- sudo dnf install dnf-plugin-system-upgrade --best
+	- sudo dnf system-upgrade download --releasever=35 (on peut ajouter --nogpgcheck pour éviter les vérification des clefs)
+	- sudo dnf system-upgrade reboot
+	- rpm --rebuilddb
+
+// Commandes linux:
+	- lsblk: donner les noms des périphériques sur linux.
+	- sudo dd bs=1M conv=fdatasync if=~/Téléchargements/proxmox-ve_7.2-1.iso of=/dev/sdd1 : créer une cléf bootable sur le device '/dev/sdd1 ' (j'ai vu le nom du device avec lsblk)
+	
+// machines virtuelles
+	- s'assurer que les système supporte les mac virtuelles:  cat /proc/cpuinfo | egrep "vmx|svm"
+	- Install required virtualization packages on your Fedora system by running: sudo dnf -y install bridge-utils libvirt virt-install qemu-kvm
+	- 
+	
+// Monter un fichier iso sur le lecteur de CD
+mount -o loop /chemin/fichier.iso /media/cdrom
+
+// redémarer le systeme:
+	- sudo shutdown -r (now)
+	- init 6
+
+// arrêter le systeme:
+	- sudo shutdown -a
+	- init 0
+
+// démarrer le système en mode console et multi-user:
+	- init 3
+
+// démarrer le système en mode graphique et multi-user:
+	- init 5
+
+
+	
+
+
+	
+

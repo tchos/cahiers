@@ -1,0 +1,19 @@
+
+1. Quelques définitions:
+	- state: objet dans lequel on aura tous les paramètres utilespr notre app.
+	- un composant react, il nait, on le monte et à la fin on le démonte:0
+
+2. Installation de nodejs indispensable au fonctionnement de react
+	sudo dnf install -y gcc-c++ make
+	curl -sL https://rpm.nodesource.com/setup_16.x | sudo -E bash -
+	
+	1. Install node and NPM:	sudo dnf install -y nodejs npm
+	2. Install NVM via NPM:		sudo npm install -g nvm
+	3. install package:		sudo npm install -g n (n = package)
+	4. installer une librairie	npm install marked --save (ici marke d est la librairie que l'on veut installer) 
+	
+3. Après avoir récupérer un projet react sur git faire: npm install. ( Ca va installer tous les modules .
+4. Lancer le serveur local pour exécuter une app react:
+	- Se rendre dans le dossier
+	- $ npm start
+	
