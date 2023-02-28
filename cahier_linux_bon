@@ -207,17 +207,17 @@ mount -o loop /chemin/fichier.iso /media/cdrom
 
 // redémarer le systeme:
 	- sudo shutdown -r (now)
-	- init 6
+	- telinit 6
 
 // arrêter le systeme:
 	- sudo shutdown -a
-	- init 0
+	- telinit 0
 
 // démarrer le système en mode console et multi-user:
-	- init 3
+	- telinit 3
 
 // démarrer le système en mode graphique et multi-user:
-	- init 5
+	- telinit 5
 
 // Mettre le système en différents modes:
 	- Arrêter le système: halt / poweroff (SysVinit) ou systemctl halt / systemctl poweroff (Systemd)
@@ -228,6 +228,19 @@ mount -o loop /chemin/fichier.iso /media/cdrom
 
 // Envoyer un message à tous les users connectés:
 	- $ wall ensuite taper le message et valider avec la touche ctrl. Tous les users connectés au serveur recevront alors le message.
+
+// installer vmware: https://www.sysnettechsolutions.com/en/install-vmware-ubuntu/
+	désinstaller vmware: sudo vmware-installer -u vmware-workstation
+
+// En cas d'erreur de vmmon et vmnet faire successivement les étapes suivantes:
+	openssl req -new -x509 -newkey rsa:2048 -keyout VMWARE17.priv -outform DER -out VMWARE17.der -nodes -days 36500 -subj "/CN=VMware/"
+	sudo /usr/src/kernels/$(uname -r)/scripts/sign-file sha256 ./VMWARE17.priv ./VMWARE17.der $(modinfo -n vmmon)
+	sudo /usr/src/kernels/$(uname -r)/scripts/sign-file sha256 ./VMWARE17.priv ./VMWARE17.der $(modinfo -n vmnet)
+	sudo mokutil --import VMWARE17.der
+	reboot
+
+	enroller la clef dans le UEFI en entrant le password donné à la commande (sudo mokutil --import VMWARE17.der)
+
 
 
 	
