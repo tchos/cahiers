@@ -1,4 +1,4 @@
-access_token: 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
+access_token: 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
 
 
 1. Installer symfony (Voir le site de symfony)
@@ -181,3 +181,8 @@ Créer la BD du pojet:															$ symfony console doctrine:database:create
 	- Installer les fixtures avec les commandes suivantes: $ composer require orm-fixtures; $ composer require fakerphp/faker
 	- Créer ses fixture dans le fichier src/DataFixtures/AppFixtures.php ( voir des exemples dans les projets symreact et symbnb)
 	- La creation des fixtures terminee, faire: $ php bin/console doctrine:fixtures:load --no-interaction
+
+// API-PLATFORM:
+	- Exposer une entité: #[ApiResource] juste avant le mot-clef Class
+	- Définir le format de données à afficher: 03_06 de Lior Chamla.
+	- Ajouter des configurations à api-platform: 03_08 de Lior Chamla.

@@ -241,6 +241,15 @@ mount -o loop /chemin/fichier.iso /media/cdrom
 
 	enroller la clef dans le UEFI en entrant le password donné à la commande (sudo mokutil --import VMWARE17.der)
 
+[Desktop Entry]
+Encoding=UTF-8
+Name=Postman
+Exec=/home/tchos/Documents/install/web/Postman/app/Postman %U
+Icon=/home/tchos/Documents/install/web/Postman/app/assets/icon.png
+Terminal=false
+Type=Application
+Categories=Development;
+
 
 
 	
